@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogicSphere 3.0 | Premium ECE Workstation</title>
+    <style>
+        :root {
+            --bg-dark: #05070f;
+            --panel-bg: rgba(15, 23, 42, 0.75);
+            --accent-blue: #38bdf8;
+            --accent-purple: #c084fc;
+            --accent-orange: #f97316;
+            --bit-high: #22c55e;
+            --bit-low: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        /* 3D Isometric Mesh Background Layer */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { 
+            background: radial-gradient(circle at 50% 50%, #0f172a 0%, #05070f 100%), 
+                        linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px) 0 0 / 40px 40px,
+                        linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px) 0 0 / 40px 40px;
+            perspective: 1000px;
+            color: var(--text-light); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+
+        /* Premium 3D Glassmorphic Transform Screens */
+        .app-screen { 
+            display: none; 
+            width: 100%; 
+            max-width: 1200px; 
+            padding: 30px 20px; 
+            flex-direction: column; 
+            align-items: center;
+            transform: style 3d;
+            animation: screenEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .app-screen.active { display: flex; }
+
+        @keyframes screenEntrance {
+            from { opacity: 0; transform: translateY(30px) rotateX(-5deg); }
+            to { opacity: 1; transform: translateY(0) rotateX(0deg); }
+        }
+
+        header { text-align: center; margin-bottom: 25px; width: 100%; }
+        header h1 { font-size: 2.5rem; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; text-shadow: 0 0 15px rgba(56,189,248,0.2); }
+        header p { color: var(--text-muted); font-size: 1rem; margin-top: 4px; }
+
+        .workspace { display: flex; gap: 25px; width: 100%; flex-wrap: wrap; }
+        
+        /* 3D Rigid Card Layout Panels */
+        .card { 
+            background: var(--panel-bg); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 16px; 
+            padding: 25px; 
+            flex: 1; 
+            min-width: 340px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 20px rgba(56, 189, 248, 0.05);
+        }
+        .card h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; color: var(--accent-blue); }
+
+        /* Welcome Page Hero Layout */
+        .welcome-hero { text-align: center; max-width: 900px; margin: 40px auto; transform: translateZ(50px); }
+        .welcome-hero h1 { font-size: 4rem; font-weight: 900; background: linear-gradient(135deg, #38bdf8, #c084fc, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
+        .menu-grid { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 40px; flex-wrap: wrap; }
+        
+        .menu-card { 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            padding: 30px 25px; 
+            border-radius: 20px; 
+            width: 280px; 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            text-align: left;
+        }
+        .menu-card:hover { 
+            transform: scale(1.05) translateY(-10px) rotateY(5deg); 
+            border-color: var(--accent-blue); 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 189, 248, 0.2); 
+        }
+        .menu-card h3 { font-size: 1.35rem; color: #fff; margin-bottom: 8px; }
+        .menu-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* Controls Navigation Components */
+        .btn-nav { background: #1e293b; color: white; border: 1px solid #334155; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-bottom: 20px; align-self: flex-start; transition: 0.2s; }
+        .btn-nav:hover { background: #334155; border-color: var(--accent-blue); }
+        
+        select, input[type="text"], input[type="range"] { width: 100%; background: #070a12; border: 1px solid #334155; padding: 12px; border-radius: 6px; color: white; font-size: 1rem; font-weight: 600; }
+        input[type="text"]:focus { border-color: var(--accent-purple); outline: none; }
+        .switch-box { display: flex; gap: 15px; margin-top: 10px; margin-bottom: 20px; }
+        .toggle-btn { flex: 1; background: #070a12; border: 2px solid #334155; padding: 12px; border-radius: 8px; color: var(--text-muted); font-weight: 700; font-size: 1.1rem; cursor: pointer; text-align: center; }
+        .toggle-btn.high { border-color: var(--bit-high); color: var(--bit-high); background: rgba(34, 197, 94, 0.05); }
+        .toggle-btn.low { border-color: var(--bit-low); color: var(--bit-low); background: rgba(239, 68, 68, 0.05); }
+
+        /* 🔬 Interactive 3D Glowing Lamp Engine */
+        .schematic-display { display: flex; align-items: center; justify-content: space-between; background: #070a12; border: 1px dashed #334155; border-radius: 8px; padding: 25px; min-height: 140px; }
+        .node-pin { display: flex; flex-direction: column; align-items: center; font-weight: 800; font-size: 1.4rem; }
+        .node-pin span { font-size: 0.75rem; color: var(--text-muted); }
+        .expr-badge { background: #1e1b4b; color: var(--accent-purple); border: 1px solid #581c87; font-weight: 700; padding: 12px; border-radius: 6px; font-size: 0.95rem; text-align: center; max-width: 45%; word-break: break-all; }
+
+        .bulb-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 80px; }
+        .bulb-housing { width: 46px; height: 46px; background: #1e293b; border-radius: 50% 50% 45% 45%; position: relative; border: 2px solid #334155; box-shadow: inset 0 4px 8px rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.6); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateZ(20px); }
+        .bulb-filament { position: absolute; top: 30%; left: 50%; transform: translateX(-50%); width: 12px; height: 14px; border: 2px solid #475569; border-bottom: none; border-radius: 6px 6px 0 0; }
+        .bulb-base { width: 22px; height: 10px; background: #475569; margin-top: -2px; border-radius: 0 0 4px 4px; border: 1px solid #334155; }
+        .bulb-housing.glowing { background: radial-gradient(circle at 50% 30%, #fffde7 0%, #facc15 70%, #eab308 100%); border-color: #fef08a; box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), 0 0 45px 15px rgba(234, 179, 8, 0.7), 0 15px 25px rgba(234, 179, 8, 0.4); transform: translateZ(30px) scale(1.05); }
+        .bulb-housing.glowing .bulb-filament { border-color: #ea580c; box-shadow: 0 0 10px #f97316; }
+
+        /* Rectifier Component Schematics Viewer */
+        .diode-schematic-box { background: #070a12; border: 1px solid #1e293b; border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 15px; }
+        .diode-svg { width: 180px; height: 50px; fill: none; stroke: var(--text-muted); stroke-width: 2; }
+
+        /* Data Displays and Performance Matrices */
+        canvas { background: #070a12; border: 1px solid #334155; border-radius: 8px; width: 100%; height: 200px; }
+        .slider-panel { background: #070a12; border: 1px solid #1e293b; border-radius: 8px; padding: 15px; margin-top: 15px; }
+        
+        .analytics-table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 0.88rem; text-align: left; }
+        .analytics-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #94a3b8; }
+        .analytics-table td.val { text-align: right; color: var(--accent-orange); font-weight: 700; font-family: monospace; font-size: 0.95rem; }
+
+        table.logic-table { width: 100%; border-collapse: collapse; text-align: center; background: #070a12; border-radius: 6px; overflow: hidden; }
+        table.logic-table th { background: #1e293b; color: var(--accent-blue); padding: 12px; font-size: 0.9rem; }
+        table.logic-table td { padding: 12px; border-bottom: 1px solid #1e293b; color: #94a3b8; font-weight: 600; }
+        tr.active-row td { background: rgba(192, 132, 252, 0.15); color: #ffffff; border-top: 1px solid var(--accent-purple); border-bottom: 1px solid var(--accent-purple); }
+
+        .doc-content { background: var(--panel-bg); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 40px; max-width: 950px; line-height: 1.7; }
+        .doc-content h2 { color: var(--accent-blue); margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+        .doc-content h3 { color: var(--accent-purple); margin-top: 25px; margin-bottom: 8px; }
+        .doc-content ul { margin-left: 20px; margin-bottom: 15px; color: #94a3b8; }
+
+        footer { width: 100%; text-align: center; padding: 25px 20px; background: rgba(5, 7, 15, 0.95); border-top: 1px solid #1e293b; color: var(--text-muted); font-size: 0.9rem; margin-top: auto; z-index: 100; }
+        footer a { color: var(--accent-blue); text-decoration: none; font-weight: 600; margin: 0 10px; }
+        footer a:hover { color: var(--accent-purple); }
+        .divider { color: #334155; margin: 0 5px; }
+    </style>
+</head>
+<body>
+
+    <section id="screen-lobby" class="app-screen active">
+        <div class="welcome-hero">
+            <h1>LogicSphere 3.0</h1>
+            <p>Unified ECE Workstation: Advanced Combinational Core & Power Rectification Analytics</p>
+            
+            <div class="menu-grid">
+                <div class="menu-card" onclick="switchScreen('dashboard')">
+                    <h3>💻 Logic Sandbox</h3>
+                    <p>Enter compound logical expressions, verify multi-gate truth parameters, and inspect the real-time 3D glowing output lamp matrix.</p>
+                </div>
+                <div class="menu-card" onclick="switchScreen('rectifier'); startRectifierSim();">
+                    <h3>⚡ Rectifier Lab</h3>
+                    <p>Analyze nonlinear clipping architectures with live parametric solvers computing PIV, Ripple Factor, TUF, and Waveform Integrals.</p>
+                </div>
+                <div class="menu-card" onclick="switchScreen('docs')">
+                    <h3>📖 Engineering Docs</h3>
+                    <p>Read extensive long-form documentation detailing mathematical derivations, diode thresholds, and code structural physics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-dashboard" class="app-screen">
+        <button class="btn-nav" onclick="switchScreen('lobby')">⬅ Back to Lobby</button>
+        <header>
+            <h1>Combinational Logic Sandbox</h1>
+            <p>Evaluate arbitrary boolean equations and highlight active array vector matrices</p>
+        </header>
+
+        <div class="workspace">
+            <div class="card">
+                <h2>1. Control Deck & Expression Parser</h2>
+                <div style="margin-bottom: 15px;">
+                    <label for="expr-input">Boolean Algebraic Expression</label>
+                    <input type="text" id="expr-input" value="(A AND B) OR (NOT A)" oninput="processExpression()">
+                    <div id="error-log" style="color: var(--bit-low); font-size: 0.85rem; margin-top: 5px; display: none; font-weight: bold;">⚠️ Syntax Error: Invalid logical operator balance.</div>
+                </div>
+
+                <label>Manipulate Node Input Vectors</label>
+                <div class="switch-box">
+                    <div id="btn-A" class="toggle-btn low" onclick="toggleInput('A')">A = 0</div>
+                    <div id="btn-B" class="toggle-btn low" onclick="toggleInput('B')">B = 0</div>
+                </div>
+
+                <h2>2. Circuit Evaluation Layout</h2>
+                <div class="schematic-display" style="margin-top: 10px;">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div id="pin-A-display" class="node-pin" style="color: var(--bit-low);">0 <span>Pin A</span></div>
+                        <div id="pin-B-display" class="node-pin" style="color: var(--bit-low);">0 <span>Pin B</span></div>
+                    </div>
+                    
+                    <div id="expr-render" class="expr-badge">F(A,B)</div>
+                    
+                    <div class="bulb-wrapper">
+                        <div class="bulb-housing" id="bulb-object">
+                            <div class="bulb-filament"></div>
+                        </div>
+                        <div class="bulb-base"></div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: bold;">OUTPUT Y</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>3. Matrix Truth Evaluation Grid</h2>
+                <table id="truth-table" class="logic-table"></table>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-rectifier" class="app-screen">
+        <button class="btn-nav" onclick="switchScreen('lobby'); stopRectifierSim();">⬅ Back to Lobby</button>
+        <header>
+            <h1>Analog Rectification Lab</h1>
+            <p>Compute performance integrals and track dynamic time-domain conduction waves</p>
+        </header>
+
+        <div class="workspace">
+            <div class="card">
+                <h2>1. Signal Monitors ($V_{in}$ & Schematic)</h2>
+                
+                <div class="diode-schematic-box">
+                    <svg class="diode-svg" id="schematic-viewer" viewBox="0 0 100 30">
+                        </svg>
+                    <div id="schematic-title" style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Circuit Model Wireframe</div>
+                </div>
+
+                <canvas id="canvas-input"></canvas>
+                
+                <div class="slider-panel">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <label for="slider-amp">Peak Input Amplitude ($V_m$)</label>
+                        <span id="amp-val" style="color: var(--accent-orange); font-weight: bold;">60V</span>
+                    </div>
+                    <input type="range" id="slider-amp" min="20" max="90" value="60">
+
+                    <div style="display: flex; justify-content: space-between; margin-top: 12px; margin-bottom: 5px;">
+                        <label for="slider-rl">Load Resistance ($R_L$)</label>
+                        <span id="rl-val" style="color: var(--accent-orange); font-weight: bold;">1000 Ω</span>
+                    </div>
+                    <input type="range" id="slider-rl" min="500" max="2500" value="1000" step="100">
+                    <input type="hidden" id="slider-freq" value="1">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>2. Rectified Waveform ($V_{out}$) & Metrics</h2>
+                <canvas id="canvas-output"></canvas>
+
+                <div class="slider-panel" style="padding: 12px;">
+                    <label for="rect-type">Circuit Network Configuration</label>
+                    <select id="rect-type" style="margin-top: 5px; margin-bottom: 12px;">
+                        <option value="half">Half-Wave Rectifier Circuit (Single Diode)</option>
+                        <option value="full">Full-Wave Bridge Rectifier (4-Diode Network)</option>
+                    </select>
+                    
+                    <table class="analytics-table">
+                        <tr><td>Average DC Voltage ($V_{dc}$)</td><td class="val" id="m-vdc">0.00 V</td></tr>
+                        <tr><td>Maximum Load Current ($I_m$)</td><td class="val" id="m-im">0.00 mA</td></tr>
+                        <tr><td>Average DC Current ($I_{dc}$)</td><td class="val" id="m-idc">0.00 mA</td></tr>
+                        <tr><td>DC Power Output ($P_{dc}$)</td><td class="val" id="m-pdc">0.00 mW</td></tr>
+                        <tr><td>AC Power Output ($P_{ac}$)</td><td class="val" id="m-pac">0.00 mW</td></tr>
+                        <tr><td>Ripple Factor ($\gamma$)</td><td class="val" id="m-ripple">0.00</td></tr>
+                        <tr><td>Peak Inverse Voltage (PIV)</td><td class="val" id="m-piv">0.00 V</td></tr>
+                        <tr><td>Transformer Utilization Factor (TUF)</td><td class="val" id="m-tuf">0.00</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-docs" class="app-screen">
+        <button class="btn-nav" onclick="switchScreen('lobby')">⬅ Back to Lobby</button>
+        
+        <div class="doc-content">
+            <h2>Detailed System Operations & Theoretical Framework</h2>
+            
+            <h3>1. Application Overview</h3>
+            <p>This software serves as an integrated analytical workspace tailored for second-year Electronics and Communication Engineering labs. It bridges discrete combinational logical models with time-continuous nonlinear semiconductor behaviors, providing real-time visual feedback alongside rigid mathematical parameters.</p>
+            
+            <h3>2. Combinational Logic Solver Core</h3>
+            <p>The core digital engine converts high-level string matrices into executable JavaScript logic. By reading text elements dynamically, it strips out whitespaces and standardizes user-written arrays. Token sequences like <code>AND</code>, <code>OR</code>, <code>NOT</code>, and <code>XOR</code> are processed into bitwise operators. The system checks a total of $2^n$ entry fields to instantly map every input vector combination directly into a responsive truth table view.</p>
+
+            <h3>3. Analytical Rectifier Performance Formulae</h3>
+            <p>The analog module uses integration theorems to resolve performance parameters based on peak voltage ($V_m$) and load resistance ($R_L$):</p>
+            
+            <h3>Half-Wave Rectification Equations:</h3>
+            <ul>
+                <li><strong>Conduction Window:</strong> The single forward-biased semiconductor conducts only during the positive cycle $[0, \pi]$, yielding a clipping profile where output drops to zero during the negative alternation.</li>
+                <li><strong>Average DC Voltage:</strong> Determined by averaging the sinusoidal profile across the full period: $V_{dc} = \frac{V_m}{\pi}$.</li>
+                <li><strong>Maximum Load Current:</strong> Peak current passing through the network: $I_m = \frac{V_m}{R_L}$.</li>
+                <li><strong>Average DC Current:</strong> Total average current evaluated over time: $I_{dc} = \frac{I_m}{\pi}$.</li>
+                <li><strong>DC Power Output:</strong> Calculated from the active current and resistance components: $P_{dc} = I_{dc}^2 \times R_L$.</li>
+                <li><strong>AC Power Output:</strong> Total continuous power including alternating fluctuations: $P_{ac} = I_{rms}^2 \times R_L$, where $I_{rms} = \frac{I_m}{2}$.</li>
+                <li><strong>Ripple Factor ($\gamma$):</strong> Measure of the remaining AC fluctuations in the output signal: $\gamma = \sqrt{(\frac{I_{rms}}{I_{dc}})^2 - 1} = 1.211$.</li>
+                <li><strong>Peak Inverse Voltage (PIV):</strong> Maximum reverse voltage handled by the diode during non-conduction: $\text{PIV} = V_m$.</li>
+                <li><strong>Transformer Utilization Factor (TUF):</strong> Measures transformer efficiency: $\text{TUF} = 0.287$.</li>
+            </ul>
+
+            <h3>Full-Wave Bridge Rectification Equations:</h3>
+            <ul>
+                <li><strong>Conduction Window:</strong> Interlocking bridge diodes handle alternating conduction paths over both halves of the period ($[0, \pi]$ and $[\pi, 2\pi]$), flipping negative states to establish full absolute polarization ($V_{out} = |V_{in}|$).</li>
+                <li><strong>Average DC Voltage:</strong> Delivers twice the average output capacity: $V_{dc} = \frac{2V_m}{\pi}$.</li>
+                <li><strong>Average DC Current:</strong> Corresponding double current output: $I_{dc} = \frac{2I_m}{\pi}$.</li>
+                <li><strong>AC Power Output:</strong> Power evaluated using full-wave roots: $P_{ac} = I_{rms}^2 \times R_L$, where $I_{rms} = \frac{I_m}{\sqrt{2}}$.</li>
+                <li><strong>Ripple Factor ($\gamma$):</strong> Drastically minimized alternating ripple component: $\gamma = \sqrt{(\frac{I_{rms}}{I_{dc}})^2 - 1} = 0.482$.</li>
+                <li><strong>Peak Inverse Voltage (PIV):</strong> Across a bridge loop network, the maximum inverse barrier tracks directly to: $\text{PIV} = V_m$.</li>
+                <li><strong>Transformer Utilization Factor (TUF):</strong> Significantly optimized power transformer distribution profile: $\text{TUF} = 0.693$.</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <div>
+            © 2026 Developed by <strong>PREM SHAH</strong> | Electronics and Communication Engineering Portfolio Project
+        </div>
+        <div style="margin-top: 8px;">
+            <a href="https://github.com/PremShah-22" target="_blank">🔗 GitHub: PremShah-22</a>
+            <span class="divider">|</span>
+            <a href="https://linkedin.com/in/prem-shah-848054389" target="_blank">🔗 LinkedIn Profile</a>
+        </div>
+    </footer>
+
+    <script>
+        // --- SCREEN STATE SWAPPING ---
+        let inputs = { A: 0, B: 0 };
+        let rectifierAnimationId = null;
+        let timeOffset = 0;
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenId}`).classList.add('active');
+        }
+
+        // --- DIGITAL LOGIC Sandbox ENGINE ---
+        function toggleInput(pin) {
+            inputs[pin] = inputs[pin] === 0 ? 1 : 0;
+            updateInputsUI();
+            evaluateCurrentState();
+        }
+
+        function updateInputsUI() {
+            ['A', 'B'].forEach(pin => {
+                const btn = document.getElementById(`btn-${pin}`);
+                const pinDisp = document.getElementById(`pin-${pin}-display`);
+                btn.className = inputs[pin] === 1 ? "toggle-btn high" : "toggle-btn low";
+                btn.innerText = `${pin} = ${inputs[pin]}`;
+                if (pinDisp) {
+                    pinDisp.innerText = inputs[pin];
+                    pinDisp.style.color = inputs[pin] === 1 ? "var(--bit-high)" : "var(--bit-low)";
+                    pinDisp.innerHTML += `<span>Pin ${pin}</span>`;
+                }
+            });
+        }
+
+        function parseExpression(exprString, a, b) {
+            let tokens = exprString.toUpperCase();
+            tokens = tokens.replace(/\bA\b/g, a).replace(/\bB\b/g, b);
+            tokens = tokens.replace(/\bAND\b/g, '&&').replace(/\bOR\b/g, '||').replace(/\bXOR\b/g, '^');
+            tokens = tokens.replace(/\bNOT\s+([01]|\([^)]+\))/g, '!$1').replace(/\bNOT\b/g, '!'); 
+
+            try {
+                const secureCheck = tokens.replace(/[01\s&|!^()]/g, '');
+                if(secureCheck !== '') throw new Error("Fault");
+                return eval(tokens) ? 1 : 0;
+            } catch (err) { return null; }
+        }
+
+        function evaluateCurrentState() {
+            const rawExpr = document.getElementById('expr-input').value;
+            const bulb = document.getElementById('bulb-object');
+            let outputVal = parseExpression(rawExpr, inputs.A, inputs.B);
+
+            if (outputVal !== null) {
+                if (outputVal === 1) bulb.classList.add('glowing');
+                else bulb.classList.remove('glowing');
+                highlightTableRow(inputs.A, inputs.B);
+            }
+        }
+
+        function processExpression() {
+            const rawExpr = document.getElementById('expr-input').value;
+            const errorLog = document.getElementById('error-log');
+            const exprRender = document.getElementById('expr-render');
+            let testVal = parseExpression(rawExpr, 0, 0);
+
+            if (testVal === null) {
+                if(errorLog) errorLog.style.display = "block";
+                return;
+            }
+            if(errorLog) errorLog.style.display = "none";
+            exprRender.innerText = rawExpr.replace(/\s+/g, ' ');
+            generateTable(rawExpr);
+            evaluateCurrentState();
+        }
+
+        function generateTable(expr) {
+            const table = document.getElementById('truth-table');
+            table.innerHTML = `
+                <tr><th>Input A</th><th>Input B</th><th>Output Y</th></tr>
+                <tr id="row-0-0"><td>0</td><td>0</td><td>${parseExpression(expr, 0, 0) ?? '?'}</td></tr>
+                <tr id="row-0-1"><td>0</td><td>1</td><td>${parseExpression(expr, 0, 1) ?? '?'}</td></tr>
+                <tr id="row-1-0"><td>1</td><td>0</td><td>${parseExpression(expr, 1, 0) ?? '?'}</td></tr>
+                <tr id="row-1-1"><td>1</td><td>1</td><td>${parseExpression(expr, 1, 1) ?? '?'}</td></tr>`;
+        }
+
+        function highlightTableRow(a, b) {
+            document.querySelectorAll('#truth-table tr').forEach(r => r.className = "");
+            const activeRow = document.getElementById(`row-${a}-${b}`);
+            if (activeRow) activeRow.className = "active-row";
+        }
+
+        // --- ANALOG OSCILLOSCOPE & VECTOR INTEGRAL RUNTIME ---
+        const cIn = document.getElementById('canvas-input');
+        const cOut = document.getElementById('canvas-output');
+        const ctxIn = cIn.getContext('2d');
+        const ctxOut = cOut.getContext('2d');
+        const svgSchematic = document.getElementById('schematic-viewer');
+
+        function startRectifierSim() {
+            cIn.width = cIn.parentElement.clientWidth - 50; cIn.height = 180;
+            cOut.width = cOut.parentElement.clientWidth - 50; cOut.height = 180;
+            loopRectifierGraphics();
+        }
+
+        function stopRectifierSim() {
+            if(rectifierAnimationId) cancelAnimationFrame(rectifierAnimationId);
+        }
+
+        function drawSchematicVector(mode) {
+            if (mode === 'half') {
+                document.getElementById('schematic-title').innerText = "Half-Wave Schematic: 1x Conduction Diode Array";
+                svgSchematic.innerHTML = `
+                    <text x="5" y="18" fill="#64748b" font-size="3" font-weight="bold">AC IN</text>
+                    <circle cx="15" cy="15" r="3" stroke="#38bdf8"/>
+                    <line x1="18" y1="15" x2="35" y2="15" />
+                    <polygon points="35,10 45,15 35,20" fill="#f97316" stroke="#f97316"/>
+                    <line x1="45" y1="10" x2="45" y2="20" stroke="#f97316"/>
+                    <line x1="45" y1="15" x2="70" y2="15" />
+                    <rect x="70" y="8" width="6" height="14" fill="#1e293b" stroke="#64748b"/>
+                    <text x="71" y="16" fill="#94a3b8" font-size="3">RL</text>
+                    <line x1="76" y1="15" x2="90" y2="15" />
+                    <circle cx="90" cy="15" r="2" fill="#64748b"/>
+                `;
+            } else {
+                document.getElementById('schematic-title').innerText = "Full-Wave Bridge Schematic: 4-Diode Interlocking Matrix";
+                svgSchematic.innerHTML = `
+                    <text x="2" y="18" fill="#64748b" font-size="3" font-weight="bold">AC IN</text>
+                    <line x1="12" y1="15" x2="25" y2="15" />
+                    <rect x="25" y="5" width="20" height="20" fill="#0f172a" stroke="#c084fc" transform="rotate(45 35 15)"/>
+                    <text x="32" y="17" fill="#fff" font-size="4" font-weight="bold">⚡</text>
+                    <line x1="45" y1="15" x2="65" y2="15" />
+                    <rect x="65" y="8" width="6" height="14" fill="#1e293b" stroke="#64748b"/>
+                    <text x="66" y="16" fill="#94a3b8" font-size="3">RL</text>
+                    <line x1="71" y1="15" x2="85" y2="15" />
+                    <circle cx="85" cy="15" r="2" fill="#64748b"/>
+                `;
+            }
+        }
+
+        function loopRectifierGraphics() {
+            const amp = parseFloat(document.getElementById('slider-amp').value);
+            const rl = parseFloat(document.getElementById('slider-rl').value);
+            const mode = document.getElementById('rect-type').value;
+            const freq = 1;
+
+            document.getElementById('amp-val').innerText = amp + ' V';
+            document.getElementById('rl-val').innerText = rl + ' Ω';
+
+            drawSchematicVector(mode);
+
+            // --- INTEGRAL RESOLUTION PARAMETRIC CONVERSIONS ---
+            let im = (amp / rl) * 1000; // Peak current in mA
+            let vdc = 0; let idc = 0; let pdc = 0; let pac = 0; let ripple = 0; let piv = 0; let tuf = 0;
+
+            if (mode === 'half') {
+                vdc = amp / Math.PI;
+                idc = im / Math.PI;
+                pdc = Math.pow(idc / 1000, 2) * rl * 1000;
+                pac = Math.pow((im / 2) / 1000, 2) * rl * 1000;
+                ripple = 1.211;
+                piv = amp;
+                tuf = 0.287;
+            } else {
+                vdc = (2 * amp) / Math.PI;
+                idc = (2 * im) / Math.PI;
+                pdc = Math.pow(idc / 1000, 2) * rl * 1000;
+                pac = Math.pow((im / Math.sqrt(2)) / 1000, 2) * rl * 1000;
+                ripple = 0.482;
+                piv = amp;
+                tuf = 0.693;
+            }
+
+            // Display raw text metrics back into the table structure
+            document.getElementById('m-vdc').innerText = vdc.toFixed(2) + " V";
+            document.getElementById('m-im').innerText = im.toFixed(2) + " mA";
+            document.getElementById('m-idc').innerText = idc.toFixed(2) + " mA";
+            document.getElementById('m-pdc').innerText = pdc.toFixed(2) + " mW";
+            document.getElementById('m-pac').innerText = pac.toFixed(2) + " mW";
+            document.getElementById('m-ripple').innerText = ripple.toFixed(3);
+            document.getElementById('m-piv').innerText = piv.toFixed(2) + " V";
+            document.getElementById('m-tuf').innerText = tuf.toFixed(3);
+
+            // --- PLOT SINE WAVE PATHS ---
+            ctxIn.clearRect(0,0, cIn.width, cIn.height);
+            ctxOut.clearRect(0,0, cOut.width, cOut.height);
+
+            [ctxIn, ctxOut].forEach(ctx => {
+                ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(0, cIn.height/2); ctx.lineTo(cIn.width, cIn.height/2); ctx.stroke();
+            });
+
+            ctxIn.beginPath(); ctxIn.strokeStyle = '#38bdf8'; ctxIn.lineWidth = 2.5;
+            ctxOut.beginPath(); ctxOut.strokeStyle = '#f97316'; ctxOut.lineWidth = 2.5;
+
+            timeOffset += 1.5 * freq;
+
+            for (let x = 0; x < cIn.width; x++) {
+                let angle = (x / cIn.width) * 4 * Math.PI * freq - (timeOffset * 0.05);
+                let yIn = Math.sin(angle) * (amp * 0.8 * (cIn.height / 200)); 
+                let yOut = 0;
+
+                if (mode === 'half') {
+                    yOut = yIn > 0 ? yIn : 0;
+                } else {
+                    yOut = Math.abs(yIn);
+                }
+
+                let canvasYIn = cIn.height / 2 - yIn;
+                let canvasYOut = cOut.height / 2 - yOut;
+
+                if (x === 0) {
+                    ctxIn.moveTo(x, canvasYIn);
+                    ctxOut.moveTo(x, canvasYOut);
+                } else {
+                    ctxIn.lineTo(x, canvasYIn);
+                    ctxOut.lineTo(x, canvasYOut);
+                }
+            }
+            ctxIn.stroke();
+            ctxOut.stroke();
+
+            rectifierAnimationId = requestAnimationFrame(loopRectifierGraphics);
+        }
+
+        // Bootstrap on startup initialization
+        processExpression();
+        updateInputsUI();
+    </script>
+</body>
+</html>
